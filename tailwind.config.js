@@ -21,7 +21,12 @@ export default {
         "lg": "1.5rem",
         "xl": "2rem",
         "2xl": "2.5rem",
+        "3xl": "3rem",
         "full": "9999px"
+      },
+      boxShadow: {
+        'soft': '0 8px 30px rgba(0,0,0,0.06)',
+        'glow': '0 0 20px rgba(249, 245, 6, 0.3)',
       },
       animation: {
         shimmer: "shimmer 2s infinite",
