@@ -1,32 +1,51 @@
 
-export function Calendar() {
-    const days = Array.from({ length: 31 }, (_, i) => i + 1);
+interface CalendarProps {
+    currentDate?: Date;
+}
+
+export function Calendar({ currentDate = new Date() }: CalendarProps) {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+
+    // Get number of days in the month
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+
+    // Get starting day of the week (0 = Sunday, etc.)
+    const firstDayOfMonth = new Date(year, month, 1).getDay();
+
     const weekDays = ["S", "M", "T", "W", "T", "F", "S"];
 
     // Mock data for day statuses: 0=skipped, 1=done, 2=failed
+    // We'll deterministically generate "random" status based on day + month to keep it consistent while browsing
     const getStatus = (day: number) => {
-        if ([2, 3, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 17, 18, 20, 21, 22, 23].includes(day)) return 1;
-        if ([4, 16].includes(day)) return 2;
-        return 0;
+        const seed = day + month * 31;
+        if (seed % 7 === 0) return 2; // Failed
+        if (seed % 3 === 0) return 0; // Skipped
+        return 1; // Done
     };
+
+    const today = new Date();
+    const isCurrentMonth = today.getMonth() === month && today.getFullYear() === year;
 
     return (
         <div className="bg-white dark:bg-stone-850 rounded-2xl p-4 shadow-sm border border-stone-100 dark:border-stone-800/50">
             <div className="grid grid-cols-7 mb-2">
-                {weekDays.map((day) => (
-                    <div key={day} className="text-center text-[10px] uppercase font-bold text-stone-400 dark:text-stone-500 tracking-wider">
+                {weekDays.map((day, i) => (
+                    <div key={`${day}-${i}`} className="text-center text-[10px] uppercase font-bold text-stone-400 dark:text-stone-500 tracking-wider">
                         {day}
                     </div>
                 ))}
             </div>
             <div className="grid grid-cols-7 gap-y-3 gap-x-1 justify-items-center">
-                {/* Padding days */}
-                <div className="size-9"></div>
-                <div className="size-9"></div>
+                {/* Padding days for start of month */}
+                {Array.from({ length: firstDayOfMonth }).map((_, i) => (
+                    <div key={`empty-${i}`} className="size-9"></div>
+                ))}
 
                 {days.map((day) => {
                     const status = getStatus(day);
-                    const isToday = day === 24;
+                    const isToday = isCurrentMonth && day === today.getDate();
 
                     if (isToday) {
                         return (
@@ -46,7 +65,9 @@ export function Calendar() {
                     } else if (status === 2) { // Failed
                         className += "border-2 border-red-200 dark:border-red-900/40 text-red-500 dark:text-red-400";
                     } else { // Skipped
-                        if (day > 24) {
+                        // Future days or just skipped
+                        const isFuture = isCurrentMonth && day > today.getDate();
+                        if (isFuture || (!isCurrentMonth && currentDate > today)) {
                             className += "bg-transparent text-stone-300 dark:text-stone-700 cursor-default hover:scale-100";
                         } else {
                             className += "bg-stone-100 dark:bg-stone-800 text-stone-400 dark:text-stone-500";
