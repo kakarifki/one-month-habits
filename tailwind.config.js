@@ -11,14 +11,16 @@ export default {
         "primary": "#f9f506",
         "background-light": "#f8f8f5",
         "background-dark": "#23220f",
+        "stone-850": "#1c1c19",
       },
       fontFamily: {
         "display": ["Spline Sans", "sans-serif"]
       },
       borderRadius: {
         "DEFAULT": "1rem",
-        "lg": "2rem",
-        "xl": "2.5rem",
+        "lg": "1.5rem",
+        "xl": "2rem",
+        "2xl": "2.5rem",
         "full": "9999px"
       },
       animation: {

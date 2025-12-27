@@ -1,19 +1,15 @@
-import { Layout } from "./components/Layout";
-import { Header } from "./components/Header";
-import { ProgressCard } from "./components/ProgressCard";
-import { HabitList } from "./components/HabitList";
-import { FAB } from "./components/FAB";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { DashboardPage } from "./pages/DashboardPage";
+import { ReportPage } from "./pages/ReportPage";
 
 function App() {
   return (
-    <Layout>
-      <Header />
-      <main className="flex flex-col px-4 gap-6">
-        <ProgressCard />
-        <HabitList />
-      </main>
-      <FAB />
-    </Layout>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<DashboardPage />} />
+        <Route path="/report" element={<ReportPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
