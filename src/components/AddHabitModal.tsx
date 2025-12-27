@@ -3,21 +3,31 @@ import { useState, useEffect } from "react";
 interface AddHabitModalProps {
     isOpen: boolean;
     onClose: () => void;
+    onSave: (name: string) => void;
 }
 
-export function AddHabitModal({ isOpen, onClose }: AddHabitModalProps) {
+export function AddHabitModal({ isOpen, onClose, onSave }: AddHabitModalProps) {
     const [isVisible, setIsVisible] = useState(false);
+    const [habitName, setHabitName] = useState("");
 
     useEffect(() => {
         if (isOpen) {
             setIsVisible(true);
             document.body.style.overflow = "hidden";
+            setHabitName(""); // Reset input when opening
         } else {
             const timer = setTimeout(() => setIsVisible(false), 300); // Wait for transition
             document.body.style.overflow = "unset";
             return () => clearTimeout(timer);
         }
     }, [isOpen]);
+
+    const handleSave = () => {
+        if (habitName.trim()) {
+            onSave(habitName);
+            onClose();
+        }
+    };
 
     if (!isVisible && !isOpen) return null;
 
@@ -57,6 +67,11 @@ export function AddHabitModal({ isOpen, onClose }: AddHabitModalProps) {
                                 autoFocus
                                 className="w-full bg-transparent border-none text-[#181811] dark:text-white text-4xl font-medium placeholder-[#cdcDB4] dark:placeholder-gray-700 focus:ring-0 p-0 caret-primary leading-tight outline-none"
                                 placeholder="e.g., Morning Run"
+                                value={habitName}
+                                onChange={(e) => setHabitName(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') handleSave();
+                                }}
                             />
                         </div>
                     </div>
@@ -78,7 +93,10 @@ export function AddHabitModal({ isOpen, onClose }: AddHabitModalProps) {
 
                 {/* Action Button */}
                 <div className="px-6 pb-6 w-full">
-                    <button className="w-full h-14 bg-primary text-[#181811] text-lg font-bold rounded-full shadow-glow hover:brightness-95 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                    <button
+                        onClick={handleSave}
+                        className="w-full h-14 bg-primary text-[#181811] text-lg font-bold rounded-full shadow-glow hover:brightness-95 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                    >
                         <span>Save Habit</span>
                         <span className="material-symbols-outlined text-xl">check</span>
                     </button>
